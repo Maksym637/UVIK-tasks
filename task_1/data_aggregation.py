@@ -1,30 +1,26 @@
 import csv
 import json
+import os
 
 
 def process_data(csv_file_path: str) -> json:
-    countries_set = set()
-    output = dict()
+    peopleInCountry = {}
+
+    if os.path.getsize(csv_file_path) == 0:
+        return "File is empty"
 
     with open(csv_file_path) as csv_file:
-        file = csv.reader(csv_file, delimiter=',')
-        file_arr = list(file)
-        
-        for i in range(1, len(file_arr)):
-            countries_set.add(file_arr[i][0])
-        
-        countries_arr = list(countries_set)
-        countries_arr.sort()
+        rows = csv.reader(csv_file, delimiter=',')
+        next(rows)
 
-        for i in range(len(countries_arr)):
-            tmp_about = {"people": [], "count": 0}
-            for j in range(1, len(file_arr)):
-                if file_arr[j][0] == countries_arr[i]:
-                    tmp_about["people"].append(file_arr[j][1])
-                    tmp_about["count"] = len(tmp_about["people"])
-                    output[countries_arr[i]] = tmp_about
+        for row in rows:
+            country = row[0]
+            if not country in peopleInCountry:
+                peopleInCountry[country] = {"people": [], "count": 0}
+            peopleInCountry[country]["people"].append(row[1])
+            peopleInCountry[country]["count"] += 1
     
-    return json.dumps(output, indent=4)
+    return json.dumps(peopleInCountry, indent=4)
 
 
 if __name__ == "__main__":

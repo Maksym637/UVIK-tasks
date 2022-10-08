@@ -20,5 +20,5 @@ def test_process_data_3():
 
 
 def test_process_data_4():
-    result = dict()
-    assert json.loads(process_data('data/test4.csv')) == result
+    result = "File is empty"
+    assert process_data('data/test4.csv') == result
