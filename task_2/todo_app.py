@@ -23,11 +23,11 @@ def getAllItems() -> None:
 def deleteItem(name: str) -> None:
     updated_storage = []
     with open(STORAGE, newline="") as csv_file:
-      rows = csv.reader(csv_file, delimiter=",")  
-      for row in rows:            
-        if row[0] != name:
-            updated_storage.append(row)
-      update(updated_storage)
+        rows = csv.reader(csv_file, delimiter=",")
+        for row in rows:
+            if row[0] != name:
+                updated_storage.append(row)
+        update(updated_storage)
     print(f"Task '{name}' is deleted from the storage !")
 
 
@@ -36,7 +36,7 @@ def doneItem(name: str) -> None:
     day = datetime.datetime.today().strftime("%Y.%m.%d")
     with open(STORAGE, newline="") as csv_file:
         rows = csv.reader(csv_file, delimiter=",")
-        for row in rows:            
+        for row in rows:
             if row[0] == name:
                 row[1] = f"{day}"
             updated_storage.append(row)
@@ -45,15 +45,25 @@ def doneItem(name: str) -> None:
 
 
 def update(updated_storage: list) -> None:
-    with open(STORAGE,"w",newline="") as csv_file:
+    with open(STORAGE, "w", newline="") as csv_file:
         write_data = csv.writer(csv_file)
         write_data.writerows(updated_storage)
 
 
 def clearStorage() -> None:
-    with open(STORAGE,"w") as csv_file:
+    with open(STORAGE, "w") as csv_file:
         csv_file.truncate()
     print("Your storage is clear !")
+
+
+def isExist(name: str) -> bool:
+    flag = False
+    with open(STORAGE) as csv_file:
+        rows = csv.reader(csv_file, delimiter=",")
+        for row in rows:
+            if name in row[0]:
+                flag = True
+    return flag
 
 
 def menu() -> None:
@@ -73,7 +83,7 @@ def menu() -> None:
 
 
 if __name__ == "__main__":
-    print("\n << Welcome to the TODO list app >> ")
+    print("\n   << TODO - LIST >>")
 
     while True:
         menu()
@@ -91,11 +101,17 @@ if __name__ == "__main__":
             count = int(input("How many items do you want to delete : "))
             for _ in range(count):
                 task_name = input("Enter your task name to delete : ")
-                deleteItem(task_name)
+                if isExist(task_name):
+                    deleteItem(task_name)
+                else:
+                    print(f"Task '{task_name}' doesn't exist in the storage !")
 
         elif user_input == 3:
             task_name = input("Enter your task name which is done : ")
-            doneItem(task_name)
+            if isExist(task_name):
+                doneItem(task_name)
+            else:
+                print(f"Task '{task_name}' doesn't exist in the storage !")
 
         elif user_input == 4:
             print("\nNUMBER\t\tITEM NAME\tDATE OF FINISH\n")

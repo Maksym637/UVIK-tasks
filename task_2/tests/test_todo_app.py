@@ -2,7 +2,7 @@ import csv
 import os
 import datetime
 
-from todo_app import STORAGE, addItem, deleteItem, doneItem, clearStorage
+from todo_app import STORAGE, addItem, deleteItem, doneItem, clearStorage, isExist
 
 task1 = {"Item": "task 1", "Date": "Not completed yet"}
 task2 = {"Item": "task 2", "Date": "Not completed yet"}
@@ -42,3 +42,8 @@ def test_addItem_doneItem_deleteItem():
     assert data_from_csv[1][1] == datetime.datetime.today().strftime("%Y.%m.%d")
 
     clearStorage()
+
+
+def test_isExist():
+    assert isExist("test n1") == False
+    assert isExist(".......") == False
